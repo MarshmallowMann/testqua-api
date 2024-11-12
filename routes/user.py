@@ -26,14 +26,17 @@ def list_create():
         if name is None or email is None or username is None:
             return {"error": "You need to provide name, email, and username"}, 400
 
-        user = User.prisma().create(
-            data={
-                'name': name,
-                'email': email,
-                'username': username,
-                'age': age
-            }
-        )
+        try:
+            user = User.prisma().create(
+                data={
+                    'name': name,
+                    'email': email,
+                    'username': username,
+                    'age': age
+                }
+            )
+        except Exception as e:
+            return {"error": str(e)}, 400
 
         return {"data": user.model_dump()}, 201
 
