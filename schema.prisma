@@ -9,11 +9,16 @@ generator db {
 }
 
 model User {
-    id        Int      @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    email     String   @unique
-    name      String?
-    posts     Post[]
+    id         Int       @id @default(autoincrement())
+    createdAt  DateTime  @default(now())
+    email      String    @unique
+    name       String?
+    posts      Post[]
+    username   String    @unique
+    age        Int?
+    role       String    @default("REGULAR")
+    requests   Request[]
+    booksAdded Book[]    @relation("BooksAdded")
 }
 
 model Post {
@@ -24,4 +29,30 @@ model Post {
     title     String
     author    User     @relation(fields: [authorId], references: [id])
     authorId  Int
+}
+
+model Book {
+    id          Int       @id @default(autoincrement())
+    title       String
+    description String?
+    rating      Float?
+    author      String
+    bookNumber  String    @unique
+    publishYear Int
+    genre       String
+    status      String    @default("AVAILABLE")
+    requests    Request[]
+    addedBy     User      @relation("BooksAdded", fields: [addedById], references: [id])
+    addedById   Int
+}
+
+model Request {
+    id         Int      @id @default(autoincrement())
+    status     String   @default("PENDING")
+    borrowDate DateTime
+    returnDate DateTime
+    user       User     @relation(fields: [userId], references: [id])
+    userId     Int
+    book       Book     @relation(fields: [bookId], references: [id])
+    bookId     Int
 }
